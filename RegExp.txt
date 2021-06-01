@@ -1,0 +1,26 @@
+.    - any 1 character
+
+$ 	_hdwiwdiwEDFHEOFWOF183гфя
+
+quantifier
+
+*    0 - infinity
++    1 - infinity
+?	 0 - 1
+
+{6}	 exactly 6 times
+{2, 8} anywhere between 2 and 8 times
+
+
+.*    - any input ("") and ("aowihefbpeifhqoepfuhq&&%$$[eofuhqe[ofhqe[ofjhe]]]")
+.+    - input that has at least 1 character (" ") ("d") ("ojehdfwhfpw")
+.{7}  - has to be a string of 7 characters exactly
+
+[a-z] - 1 english lower case character
+[0-9] - 1 number from 0 to 9
+[aeiou] - 1 english vowel
+
+[a-z]{5}   - a word of 5 characters all lower case
+
+[0-9] == \d
+[a-zA-Z0-9_]  == \w

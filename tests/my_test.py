@@ -1,8 +1,9 @@
 import json
 import unittest
 import requests
-
-from lib.authentication import Authenticate
+from lib.recruit_career.authentication import Authenticate
+from lib.recruit_career.base import RecruitClient
+from lib.recruit_career.positions import Positions
 
 
 class YahooAPITestCase(unittest.TestCase):
@@ -18,24 +19,38 @@ class CareerPortalTests(unittest.TestCase):
         # if don't put self above, base_url is local variable, not available outside
 
     def test_login(self):
-        sess = Authenticate() #invoking constructor to make object of class. sess is pointer to that object.
-        positions = sess.get_all_positions()
+        client = RecruitClient()
+        client.auth.authenticate('jane@example.com', 'pass')
+
+        # if u want parallel clients
+        client2 = RecruitClient()
+        client2.auth.authenticate('bob@example.com', 'pass')
+
+        # using A to instantiate P
+        auth_client = Authenticate()
+        auth_client.authenticate('jane@example.com', 'pass')
+
+        pos = Positions(auth_client)
+
+
+
+        positions = client.position.get_all_positions()
         json_positions = json.loads(positions.text)
         self.assertGreater(len(json_positions), 5)
 
-        result = sess.authenticate('student@example.com', 'welcome')
+        result = client.auth.authenticate('student@example.com', 'welcome')
         self.assertEqual(200, result.status_code)
         json_parsed = json.loads(result.text)
         self.assertTrue(json_parsed['authenticated'])
 
-        verify_response = sess.perform_user_verification()
+        verify_response = client.auth.perform_user_verification()
         verify_content = json.loads(verify_response.content)
         user_id = verify_content['id']
         email = verify_content['email']
         self.assertTrue(email == 'student@example.com')
         self.assertEqual(8, user_id)
 
-        my_positions = sess.get_candidate_positions(user_id)
+        my_positions = client.candidate.get_candidate_positions(user_id)
         json_my_positions = json.loads(my_positions.text)
         self.assertEqual(len(json_my_positions), 5)
 
